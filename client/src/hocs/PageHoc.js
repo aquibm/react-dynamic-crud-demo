@@ -3,11 +3,11 @@ import Navbar from 'components/Navigation'
 
 import './pageHoc.css'
 
-export default WrappedComponent => () => (
+export default WrappedComponent => props => (
     <div>
         <Navbar />
         <div className="page">
-            <WrappedComponent />
+            <WrappedComponent {...props} />
         </div>
     </div>
 )
