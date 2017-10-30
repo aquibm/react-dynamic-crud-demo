@@ -1,0 +1,7 @@
+id: "0271ab20-1bd2-43f5-ab7f-04cf0f824126"
+type: "TRUCK"
+fields:
+  - { name: "registration", label: "Registration Number", control: "text", required: true }
+  - { name: "dateOfPurchase", label: "Purchase Date", control: "date", required: true }
+  - { name: "transmission", label: "Transmission", control: "select", options: ["Automatic", "Manual"] }
+  - { name: "odometer", label: "Odometer Reading", control: "text", required: true, pattern: '\d' }
