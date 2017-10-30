@@ -1,3 +1,6 @@
 import React from 'react'
+import PageHoc from 'hocs/PageHoc'
 
-export default () => <div>List Entities Page</div>
+const ListEntitiesPage = () => <div>List Entities Page</div>
+
+export default PageHoc(ListEntitiesPage)

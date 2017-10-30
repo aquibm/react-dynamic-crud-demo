@@ -1,3 +1,6 @@
 import React from 'react'
+import PageHoc from 'hocs/PageHoc'
 
-export default () => <div>Home Page</div>
+const HomePage = () => <div>Home Page</div>
+
+export default PageHoc(HomePage)

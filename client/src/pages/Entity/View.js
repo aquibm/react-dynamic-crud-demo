@@ -1,3 +1,6 @@
 import React from 'react'
+import PageHoc from 'hocs/PageHoc'
 
-export default () => <div>View Entity Page</div>
+const ViewEntityPage = () => <div>View Entity Page</div>
+
+export default PageHoc(ViewEntityPage)
