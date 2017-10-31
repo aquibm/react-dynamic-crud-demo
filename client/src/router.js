@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import HomePage from './pages/Home'
 import ListEntitiesPage from './pages/Entity/List'
 import ViewEntityPage from './pages/Entity/View'
-import ModifyEntityPage from './pages/Entity/Modify'
+import UpsertEntityHoc from './pages/Entity/UpsertEntityHoc'
 
 const routes = [
     {
@@ -22,12 +22,12 @@ const routes = [
         component: ViewEntityPage,
     },
     {
-        path: '/entity/modify/:entity/:entityId',
-        component: ModifyEntityPage,
+        path: '/entity/edit/:entity/:entityId',
+        component: UpsertEntityHoc,
     },
     {
         path: '/entity/add/:entity',
-        component: ModifyEntityPage,
+        component: UpsertEntityHoc,
     },
 ]
 
