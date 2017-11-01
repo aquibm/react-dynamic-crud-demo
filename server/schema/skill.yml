@@ -2,4 +2,4 @@ id: "9bfcac95-211e-4b73-9f71-a36fec05746e"
 type: "SKILL"
 fields:
   - { name: "name", label: "Name", control: "text", required: true }
-  - { name: "requiredExperience", label: "Years of experience required", control: "text", required: true, pattern: '\d' }
+  - { name: "requiredExperience", label: "Years of experience required", control: "text", required: true, pattern: '^\d+$' }
