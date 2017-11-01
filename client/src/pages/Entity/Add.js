@@ -7,6 +7,7 @@ class AddEntityPage extends PureComponent {
     state = {
         schema: {},
         entity: {},
+        errors: {},
     }
 
     componentDidMount() {
@@ -37,30 +38,63 @@ class AddEntityPage extends PureComponent {
         }))
     }
 
-    renderControl(field, entity) {
+    _save = () => {
+        const { schema } = this.state
+        const errors = schema.fields.reduce(
+            (errors, field) =>
+                (errors = { ...errors, [field.name]: field.ref.validate() }),
+            {},
+        )
+
+        this.setState({ errors })
+    }
+
+    renderControl(field, entity, errors) {
         const Control = controlRegistry[field.control]
         const value = entity[field.name]
 
         return (
-            <div key={field.name}>
-                <span>{field.label}</span>
-                <Control
-                    field={field}
-                    value={value}
-                    onChange={this._handleChange(field.name)}
-                />
+            <div className="field" key={field.name}>
+                <label className="label">{field.label}</label>
+
+                <div className="control">
+                    <Control
+                        field={field}
+                        value={value}
+                        onChange={this._handleChange(field.name)}
+                        ref={control => (field.ref = control)}
+                    />
+                </div>
+
+                {errors &&
+                    errors.map((error, idx) => (
+                        <p key={idx} className="help is-danger">
+                            {error}
+                        </p>
+                    ))}
             </div>
         )
     }
 
     render() {
-        const { schema, entity } = this.state
+        const { schema, entity, errors } = this.state
         return (
             <div>
-                {schema.fields &&
-                    schema.fields.map(field =>
-                        this.renderControl(field, entity),
-                    )}
+                {schema.fields && (
+                    <div>
+                        {schema.fields.map(field =>
+                            this.renderControl(
+                                field,
+                                entity,
+                                errors[field.name],
+                            ),
+                        )}
+
+                        <button className="button is-info" onClick={this._save}>
+                            Save
+                        </button>
+                    </div>
+                )}
             </div>
         )
     }
