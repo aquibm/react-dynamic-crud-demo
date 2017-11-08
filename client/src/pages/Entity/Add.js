@@ -21,8 +21,9 @@ class AddEntityPage extends PureComponent {
     }
 
     getEmptyEntityFromSchema(schema) {
-        const entity = { type: schema.type }
-        schema.fields.forEach(field => (entity[field.name] = ''))
+        const entity = { type: schema.type, fields: {} }
+
+        schema.fields.forEach(field => (entity.fields[field.name] = ''))
         return entity
     }
 
@@ -33,7 +34,10 @@ class AddEntityPage extends PureComponent {
             schema: state.schema,
             entity: {
                 ...state.entity,
-                [fieldName]: value,
+                fields: {
+                    ...state.entity.fields,
+                    [fieldName]: value,
+                },
             },
         }))
     }
@@ -51,7 +55,7 @@ class AddEntityPage extends PureComponent {
 
     renderControl(field, entity, errors) {
         const Control = controlRegistry[field.control]
-        const value = entity[field.name]
+        const value = entity.fields[field.name]
 
         return (
             <div className="field" key={field.name}>
