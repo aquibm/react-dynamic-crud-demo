@@ -1,4 +1,3 @@
-id: "0271ab20-1bd2-43f5-ab7f-04cf0f824126"
 type: "TRUCK"
 fields:
   - { name: "registration", label: "Registration Number", control: "text", required: true }
