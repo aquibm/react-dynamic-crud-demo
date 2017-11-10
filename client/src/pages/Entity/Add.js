@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PageHoc from 'hocs/PageHoc'
 import { loadSchema } from 'api/loadSchema'
+import { createEntity } from 'api/entity'
 import controlRegistry from 'components/controls/controlRegistry'
 
 class AddEntityPage extends PureComponent {
@@ -43,14 +44,29 @@ class AddEntityPage extends PureComponent {
     }
 
     _save = () => {
-        const { schema } = this.state
+        const { schema, entity } = this.state
+
         const errors = schema.fields.reduce(
             (errors, field) =>
                 (errors = { ...errors, [field.name]: field.ref.validate() }),
             {},
         )
 
-        this.setState({ errors })
+        if (this.hasErrors(errors)) {
+            this.setState({ errors })
+            return
+        }
+
+        createEntity(entity)
+    }
+
+    hasErrors = errorMap => {
+        const keys = Object.keys(errorMap)
+        const allErrors = keys
+            .map(key => errorMap[key])
+            .reduce((acc, list) => (acc = [...acc, ...list]), [])
+
+        return allErrors.length > 0
     }
 
     renderControl(field, entity, errors) {

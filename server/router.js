@@ -12,6 +12,10 @@ router.get('/', (_, res) => res.send('Iz up'))
 
 router.get('/schema/:entity', schemaController.get)
 
+router.get('/entity/list/:type', entityController.list)
+router.get('/entity/:id', entityController.get)
 router.post('/entity', entityController.post)
+router.put('/entity/:id', entityController.put)
+router.delete('/entity/:id', entityController.delete)
 
 module.exports = router
