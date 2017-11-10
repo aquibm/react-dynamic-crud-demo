@@ -35,12 +35,7 @@ exports.create = entity => {
                 })
                 .then(resp => {
                     newEntityId = resp[0]
-                    const keys = Object.keys(entity.fields)
-                    const data = keys.map(key => ({
-                        entity_id: newEntityId,
-                        key,
-                        value: entity.fields[key],
-                    }))
+                    const data = mapFieldsIntoData(newEntityId, entity.fields)
 
                     return knex('data')
                         .transacting(trx)
@@ -53,6 +48,31 @@ exports.create = entity => {
                 })
         })
         .then(() => newEntityId)
+}
+
+exports.update = (entityId, fields) => {
+    if (!entityId) return Promise.reject('No entity ID specified')
+    if (!fields) return Promise.reject('No fields to update')
+
+    const data = mapFieldsIntoData(entityId, fields)
+    const updates = data.map(row =>
+        knex('data')
+            .where('entity_id', row.entity_id)
+            .andWhere('key', row.key)
+            .update(row)
+            .toString(),
+    )
+
+    return knex.transaction(trx => {
+        const promises = updates.map(update => trx.raw(update))
+
+        return Promise.all(promises)
+            .then(() => trx.commit())
+            .catch(err => {
+                trx.rollback()
+                throw err
+            })
+    })
 }
 
 exports.delete = entityId => {
@@ -75,4 +95,13 @@ exports.delete = entityId => {
                 throw err
             })
     })
+}
+
+function mapFieldsIntoData(entityId, fields) {
+    const keys = Object.keys(fields)
+    return keys.map(key => ({
+        entity_id: entityId,
+        key,
+        value: fields[key],
+    }))
 }

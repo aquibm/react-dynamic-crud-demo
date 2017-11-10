@@ -29,7 +29,17 @@ exports.post = (req, res) => {
 }
 
 exports.put = (req, res) => {
-    res.send('Not implemented.')
+    const { id } = req.params
+    const { fields } = req.body
+
+    // TODO(AM): Re-implement the same entity validation logic as the client.
+    entityStore
+        .update(id, fields)
+        .then(resp => res.send(resp))
+        .catch(err => {
+            console.log(err)
+            res.status(500).send(err)
+        })
 }
 
 exports.delete = (req, res) => {
