@@ -1,5 +1,31 @@
 const knex = require('knex')(require('../knexfile'))
 const Promise = require('bluebird')
+const { groupBy, map } = require('lodash')
+
+exports.list = type => {
+    if (!type) return Promise.reject('No type specified')
+
+    return knex('entity')
+        .join('data', 'entity.id', 'data.entity_id')
+        .where('entity.type', type)
+        .then(rows => {
+            const entityRows = groupBy(rows, row => row.entity_id)
+            const entities = map(entityRows, rows => {
+                const fields = rows.reduce(
+                    (fields, row) =>
+                        (fields = { ...fields, [row.key]: row.value }),
+                    {},
+                )
+
+                return {
+                    type: rows[0].type,
+                    fields,
+                }
+            })
+
+            return entities
+        })
+}
 
 exports.get = entityId => {
     if (!entityId) return Promise.reject('No entity ID specified')
@@ -9,6 +35,7 @@ exports.get = entityId => {
         .where('entity.id', entityId)
         .then(rows => {
             if (rows.length < 1) return rows
+
             const fields = rows.reduce(
                 (fields, row) => (fields = { ...fields, [row.key]: row.value }),
                 {},

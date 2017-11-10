@@ -1,7 +1,12 @@
 const entityStore = require('../store/entity')
 
 exports.list = (req, res) => {
-    res.send('Not implemented.')
+    const { type } = req.params
+
+    entityStore
+        .list(type)
+        .then(result => res.send(result))
+        .catch(err => res.status(500).send(err))
 }
 
 exports.get = (req, res) => {
