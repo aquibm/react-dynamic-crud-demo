@@ -6,6 +6,7 @@ exports.get = entityId => {
 
     return knex('entity')
         .join('data', 'entity.id', 'data.entity_id')
+        .where('entity.id', entityId)
         .then(rows => {
             if (rows.length < 1) return rows
             const fields = rows.reduce(
@@ -22,35 +23,54 @@ exports.get = entityId => {
 
 exports.create = entity => {
     if (!entity) return Promise.reject('No entity specified')
+    let newEntityId
+
+    return knex
+        .transaction(trx => {
+            return knex('entity')
+                .transacting(trx)
+                .returning('id')
+                .insert({
+                    type: entity.type,
+                })
+                .then(resp => {
+                    newEntityId = resp[0]
+                    const keys = Object.keys(entity.fields)
+                    const data = keys.map(key => ({
+                        entity_id: newEntityId,
+                        key,
+                        value: entity.fields[key],
+                    }))
+
+                    return knex('data')
+                        .transacting(trx)
+                        .insert(data)
+                })
+                .then(() => trx.commit())
+                .catch(err => {
+                    trx.rollback()
+                    throw err
+                })
+        })
+        .then(() => newEntityId)
+}
+
+exports.delete = entityId => {
+    if (!entityId) return Promise.reject('No entity ID specified')
 
     return knex.transaction(trx => {
-        return knex('entity')
+        return knex('data')
             .transacting(trx)
-            .returning('id')
-            .insert({
-                type: entity.type,
-            })
-            .then(resp => {
-                const entityId = resp[0]
-                const keys = Object.keys(entity.fields)
-                const data = keys.map(key => ({
-                    entity_id: entityId,
-                    key,
-                    value: entity.fields[key],
-                }))
-
-                return knex('data')
+            .where('entity_id', entityId)
+            .delete()
+            .then(() => {
+                return knex('entity')
                     .transacting(trx)
-                    .insert(data)
-                    .then(() => {
-                        return entityId
-                    })
+                    .where('id', entityId)
+                    .delete()
             })
-            .then(entityId => {
-                trx.commit()
-                return entityId
-            })
-            .catch(err => {
+            .then(() => trx.commit())
+            .catch(() => {
                 trx.rollback()
                 throw err
             })

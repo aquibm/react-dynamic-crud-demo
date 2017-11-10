@@ -9,7 +9,12 @@ exports.get = (req, res) => {
 
     entityStore
         .get(id)
-        .then(result => res.send(result))
+        .then(result => {
+            if (!result || Array.isArray(result))
+                return res.status(404).send('No such entity')
+
+            res.send(result)
+        })
         .catch(err => res.status(500).send(err))
 }
 
@@ -28,5 +33,13 @@ exports.put = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    res.send('Not implemented.')
+    const { id } = req.params
+
+    entityStore
+        .delete(id)
+        .then(resp => {
+            console.log(resp)
+            res.send(resp)
+        })
+        .catch(err => res.status(500).send(err))
 }
