@@ -18,6 +18,7 @@ exports.list = type => {
                 )
 
                 return {
+                    id: rows[0].entity_id,
                     type: rows[0].type,
                     fields,
                 }
@@ -42,6 +43,7 @@ exports.get = entityId => {
             )
 
             return {
+                id: rows[0].entity_id,
                 type: rows[0].type,
                 fields,
             }
