@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default () => (
-    <nav className="navbar is-dark" role="navigation">
+    <nav className="navbar is-dark">
         <div className="navbar-brand">
             <Link to="/" className="navbar-item">
                 Muh App
