@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PageHoc from 'hocs/PageHoc'
-import { loadSchema } from 'api/loadSchema'
-import { createEntity } from 'api/entity'
+import { loadSchema, createEntity } from 'api/entity'
 import controlRegistry from 'components/controls/controlRegistry'
 
 class AddEntityPage extends PureComponent {
