@@ -80,7 +80,7 @@ class ListEntitiesPage extends Component {
                 <thead>
                     <tr>
                         {fields.map(field => (
-                            <td key={field.name}>{field.label}</td>
+                            <th key={field.name}>{field.label}</th>
                         ))}
 
                         <td>Controls</td>
