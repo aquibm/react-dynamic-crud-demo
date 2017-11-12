@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PageHoc from 'hocs/PageHoc'
-import { loadSchema, getEntityList } from 'api/entity'
+import { loadSchema, getEntityList, deleteEntity } from 'api/entity'
+import { Link } from 'react-router-dom'
 
 class ListEntitiesPage extends Component {
     state = {
@@ -50,8 +51,33 @@ class ListEntitiesPage extends Component {
         history.push(`/entity/add/${entityType}`)
     }
 
+    _onDeleteEntity = entityId => event => {
+        event.preventDefault()
+
+        if (!window.confirm('Are you sure?')) return
+
+        deleteEntity(entityId).then(() =>
+            this.setState(state => {
+                const deletedIndex = state.entities.findIndex(
+                    entity => entity.id === entityId,
+                )
+
+                return {
+                    ...state,
+                    entities: [
+                        ...state.entities.slice(0, deletedIndex),
+                        ...state.entities.slice(
+                            deletedIndex + 1,
+                            state.entities.length,
+                        ),
+                    ],
+                }
+            }),
+        )
+    }
+
     renderEntity(entity) {
-        const { id, fields } = entity
+        const { id, fields, type } = entity
         const keys = Object.keys(fields)
 
         return (
@@ -60,13 +86,16 @@ class ListEntitiesPage extends Component {
 
                 {/* Controls */}
                 <td className="buttons has-addons">
-                    <a className="button" href="#">
+                    <Link className="button" to={`/entity/edit/${type}/${id}`}>
                         Edit
-                    </a>
+                    </Link>
 
-                    <a className="button is-danger" href="#">
+                    <button
+                        className="button is-danger"
+                        onClick={this._onDeleteEntity(id)}
+                    >
                         Delete
-                    </a>
+                    </button>
                 </td>
             </tr>
         )
@@ -106,7 +135,7 @@ class ListEntitiesPage extends Component {
                         className="button is-primary"
                         onClick={this._onAddNewEntity}
                     >
-                        Add new {entityType}
+                        Add new {entityType.toLowerCase()}
                     </button>
                 </div>
 
