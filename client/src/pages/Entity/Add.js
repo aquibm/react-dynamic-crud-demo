@@ -44,6 +44,7 @@ class AddEntityPage extends PureComponent {
 
     _save = () => {
         const { schema, entity } = this.state
+        const { history } = this.props
 
         const errors = schema.fields.reduce(
             (errors, field) =>
@@ -56,7 +57,9 @@ class AddEntityPage extends PureComponent {
             return
         }
 
-        createEntity(entity)
+        createEntity(entity).then(() => {
+            history.push(`/entity/list/${entity.type}`)
+        })
     }
 
     hasErrors = errorMap => {
