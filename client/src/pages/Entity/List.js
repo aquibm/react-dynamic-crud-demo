@@ -35,7 +35,7 @@ class ListEntitiesPage extends Component {
             getEntityList(entityType),
         ]
 
-        Promise.all(hydrationPromises).then((schema, entities) => {
+        Promise.all(hydrationPromises).then(([schema, entities]) => {
             this.setState(state => ({
                 schema,
                 entities,
@@ -50,9 +50,52 @@ class ListEntitiesPage extends Component {
         history.push(`/entity/add/${entityType}`)
     }
 
+    renderEntity(entity) {
+        const { id, fields } = entity
+        const keys = Object.keys(fields)
+
+        return (
+            <tr key={id}>
+                {keys.map(key => <td key={key}>{fields[key]}</td>)}
+
+                {/* Controls */}
+                <td className="buttons has-addons">
+                    <a className="button" href="#">
+                        Edit
+                    </a>
+
+                    <a className="button is-danger" href="#">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        )
+    }
+
+    renderEntityTable(schema, entities) {
+        const { fields } = schema
+
+        return (
+            <table className="table is-fullwidth is-hoverable">
+                <thead>
+                    <tr>
+                        {fields.map(field => (
+                            <td key={field.name}>{field.label}</td>
+                        ))}
+
+                        <td>Controls</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {entities.map(entity => this.renderEntity(entity))}
+                </tbody>
+            </table>
+        )
+    }
+
     render() {
-        const { entity } = this.props.match.params
-        const { isLoading } = this.state
+        const { entityType } = this.props.match.params
+        const { isLoading, schema, entities } = this.state
 
         if (isLoading) return <div>Loading...</div>
 
@@ -63,12 +106,12 @@ class ListEntitiesPage extends Component {
                         className="button is-primary"
                         onClick={this._onAddNewEntity}
                     >
-                        Add new {entity}
+                        Add new {entityType}
                     </button>
                 </div>
 
                 <div className="container">
-                    TODO(AM): Add a table of entities
+                    {this.renderEntityTable(schema, entities)}
                 </div>
             </div>
         )
