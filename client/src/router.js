@@ -14,19 +14,19 @@ const routes = [
         component: HomePage,
     },
     {
-        path: '/entity/list/:entity',
+        path: '/entity/list/:entityType',
         component: ListEntitiesPage,
     },
     {
-        path: '/entity/view/:entity/:entityId',
+        path: '/entity/view/:entityType/:entityId',
         component: ViewEntityPage,
     },
     {
-        path: '/entity/edit/:entity/:entityId',
+        path: '/entity/edit/:entityType/:entityId',
         component: UpsertEntityHoc,
     },
     {
-        path: '/entity/add/:entity',
+        path: '/entity/add/:entityType',
         component: UpsertEntityHoc,
     },
 ]

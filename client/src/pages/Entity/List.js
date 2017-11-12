@@ -1,15 +1,60 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PageHoc from 'hocs/PageHoc'
+import { loadSchema, getEntityList } from 'api/entity'
 
-class ListEntitiesPage extends PureComponent {
+class ListEntitiesPage extends Component {
+    state = {
+        schema: {},
+        entities: [],
+        isLoading: true,
+    }
+
+    componentWillMount() {
+        this.initialState = this.state
+    }
+
+    componentDidMount() {
+        const { match } = this.props
+        const { entityType } = match.params
+
+        this.hydrateState(entityType)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { entityType } = this.props.match.params
+        const { entityType: nextEntityType } = nextProps.match.params
+
+        if (entityType !== nextEntityType) this.hydrateState(nextEntityType)
+    }
+
+    hydrateState(entityType) {
+        this.setState({ ...this.initialState })
+
+        const hydrationPromises = [
+            loadSchema(entityType),
+            getEntityList(entityType),
+        ]
+
+        Promise.all(hydrationPromises).then((schema, entities) => {
+            this.setState(state => ({
+                schema,
+                entities,
+                isLoading: false,
+            }))
+        })
+    }
+
     _onAddNewEntity = () => {
         const { history, match } = this.props
-        const { entity } = match.params
-        history.push(`/entity/add/${entity}`)
+        const { entityType } = match.params
+        history.push(`/entity/add/${entityType}`)
     }
 
     render() {
         const { entity } = this.props.match.params
+        const { isLoading } = this.state
+
+        if (isLoading) return <div>Loading...</div>
 
         return (
             <div>

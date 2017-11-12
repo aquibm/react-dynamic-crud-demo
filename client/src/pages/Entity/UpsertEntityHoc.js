@@ -6,13 +6,13 @@ import EditEntityPage from './Edit'
 export default class extends PureComponent {
     render() {
         const { match } = this.props
-        const { entity, entityId } = match.params
+        const { entityType, entityId } = match.params
 
         return !entityId ? (
-            <AddEntityPage entityType={entity} {...this.props} />
+            <AddEntityPage entityType={entityType} {...this.props} />
         ) : (
             <EditEntityPage
-                entityType={entity}
+                entityType={entityType}
                 entityId={entityId}
                 {...this.props}
             />
