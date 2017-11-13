@@ -82,6 +82,10 @@ class ListEntitiesPage extends Component {
 
         return (
             <tr key={id}>
+                <td>
+                    <Link to={`/entity/view/${type}/${id}`}>{id}</Link>
+                </td>
+
                 {keys.map(key => <td key={key}>{fields[key]}</td>)}
 
                 {/* Controls */}
@@ -108,11 +112,13 @@ class ListEntitiesPage extends Component {
             <table className="table is-fullwidth is-hoverable">
                 <thead>
                     <tr>
+                        <th>ID</th>
+
                         {fields.map(field => (
                             <th key={field.name}>{field.label}</th>
                         ))}
 
-                        <td>Controls</td>
+                        <th>Controls</th>
                     </tr>
                 </thead>
                 <tbody>
