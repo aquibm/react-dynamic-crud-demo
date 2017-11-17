@@ -15,8 +15,7 @@ export default class ModifyEntityForm extends PureComponent {
     }
 
     _save = () => {
-        const { schema, entity, persistChanges } = this.props
-        const { history } = this.props
+        const { schema, persistChanges } = this.props
 
         const errors = schema.fields.reduce(
             (errors, field) =>
